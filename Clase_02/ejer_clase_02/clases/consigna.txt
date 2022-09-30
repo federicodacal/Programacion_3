@@ -1,0 +1,65 @@
+Parte 1:
+
+Crear, en el directorio ./clases, la siguiente clase:
+
+Mascota
+
+Atributos (públicos):
+nombre : string
+tipo : string
+edad: int
+
+Métodos (públicos):
+__construct(string, string, int)
+toString() : string
+mostrar(Mascota) : string
+equals(Mascota) : bool
+
+El constructor recibirá cómo parámetros requeridos el nombre y el tipo, mientras que la edad será opcional y su valor predeterminado será cero.
+
+El método de instancia “toString“ retornará los atributos de la instancia actual con formato: nombre - tipo - edad 
+
+El método de clase “mostrar” recibe un objeto de tipo “Mascota” por parámetro y retornará, en formato de cadena de texto,  todos los atributos de dicho objeto.
+
+El método de instancia “equals” permitirá comparar al objeto de tipo ”Mascota” que recibe cómo parámetro, con la instancia actual. Sólo devolverá TRUE si ambas “Mascotas” tienen el mismo nombre y mismo tipo.
+
+La clase Mascota debe estar en el namespace "Animalitos"
+
+Crear en el directorio raíz, el archivo test.php, el cual deberá:
+
+Crear dos objetos “Mascota” con el mismo nombre y distinto tipo.
+Mostrarlos (uno con el método estático y el otro con el de instancia)
+Compararlos.
+Crear dos objetos “Mascota” con el mismo nombre, mismo tipo y distintas edades.
+Mostrarlos (uno con el método estático y el otro con el de instancia)
+Compararlos.
+Comparar la primera “Mascota” con la tercera.
+
+Parte 2:
+
+Crear, en el directorio ./clases, la siguiente clase:
+Guarderia
+
+Atributos (públicos):
+nombre : string
+mascotas: array (de Mascotas)
+
+Métodos (públicos):
+__construct(string)
+equals(Guarderia, Mascota) : bool
+add(Mascota) : bool
+toString() : string
+
+El constructor recibirá cómo parámetro requerido el nombre.
+El método de clase “equals” permitirá comparar al objeto de tipo "Guarderia" con el objeto de tipo ”Mascota”. Sólo devolverá TRUE si la “Mascota” está en la "Guarderia".
+
+El método de instancia “add” permite agregar un objeto “Mascota” a la “Guarderia” (sólo si la mascota no está en dicha guardería, de lo contrario retorna false).
+
+El método de instancia “toString“ retornará los atributos de la instancia actual con formato: nombre, el listado completo de las mascotas y el promedio de edad (de las mascotas). 
+La clase Guarderia debe estar en el namespace "Negocios"
+
+Agregar en el archivo test.php:
+
+Crear una guardería con nombre 'La guardería de Pancho' y:
+Intentar agregar todas las mascotas.
+Mostrar el contenido de la guardería.

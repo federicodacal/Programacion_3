@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alumnos PHP</title>
+
+</head>
+<body>
+
+    <h3>Agregar</h3>
+    <!-- http://localhost/prog_3_php/Clase_03/clase03/ejercicios/nexo_poo.php -->
+    <form action="../ejercicio_clase/nexo_poo.php" method="post" id="frm-agregar" name="frm-agregar">
+        Nombre<br>
+        <input type="text" id="nombre" name="nombre" placeholder="Ingrese nombre"/> 
+        <br><br>
+        Apellido<br>
+        <input type="text" id="apellido" name="apellido" placeholder="Ingrese apellido"/> 
+        <br><br>
+        Legajo<br>
+        <input type="number" id="legajo" name="legajo" min="1000" max="9999" placeholder="Ingrese legajo"/> 
+        <br><br>
+        <input type="hidden" id="accion" name="accion" value="agregar"/> 
+        <br>
+        <input type="submit" value="Crear"/>
+    </form>
+    
+    <h3>Listar</h3>
+    <form action="../ejercicio_clase/nexo_poo.php" method="get" id="frm-listar" name="frm-listar">
+        <input type="hidden" id="accion" name="accion" value="listar">
+        <br>
+        <input type="submit" value="Listar"/>
+    </form>
+
+    <h3>Verificar</h3>
+    <form action="../ejercicio_clase/nexo_poo.php" method="post" id="frm-listar" name="frm-listar">
+        Legajo<br>
+        <input type="number" id="legajo" name="legajo" min="1000" max="9999" placeholder="Ingrese legajo"/> 
+        <br><br>
+        <input type="hidden" id="accion" name="accion" value="verificar"/> 
+        <br>
+        <input type="submit" value="Verificar"/>
+    </form>
+
+    <h3>Modificar</h3>
+    <form action="../ejercicio_clase/nexo_poo.php" method="post" id="frm-modificar" name="frm-modificar">
+        Nombre<br>
+        <input type="text" id="nombre" name="nombre" placeholder="Ingrese nombre"/> 
+        <br><br>
+        Apellido<br>
+        <input type="text" id="apellido" name="apellido" placeholder="Ingrese apellido"/> 
+        <br><br>
+        Legajo<br>
+        <input type="number" id="legajo" name="legajo" min="1000" max="9999" placeholder="Ingrese legajo"/> 
+        <br><br>
+        <input type="hidden" id="accion" name="accion" value="modificar"/> 
+        <br>
+        <input type="submit" value="Modificar"/>
+    </form>
+
+    <h3>Borrar</h3>
+    <form action="../ejercicio_clase/nexo_poo.php" method="post" id="frm-borrar" name="frm-borrar">
+        <input type="number" id="legajo" name="legajo" min="1000" max="9999" placeholder="Ingrese legajo"/> 
+        <br><br>
+        <input type="hidden" id="accion" name="accion" value="borrar"/> 
+        <br>
+        <input type="submit" value="Borrar"/>
+    </form>
+
+</body>
+</html>

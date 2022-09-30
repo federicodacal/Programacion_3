@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHP / TS ALUMNO</title>
+
+    <script src="front.js"></script>
+
+</head>
+<body>
+<h3>CRUD ALUMNO</h3>
+    <form action="" method="" id="frm" name="frm" enctype="multipart/form-data">
+        Apellido<br>
+        <input type="text" id="apellido" name="apellido"><br>
+        Nombre<br>
+        <input type="text" id="nombre" name="nombre"><br>
+        Legajo<br>        
+        <input type="number" id="legajo" name="legajo" min="100" max="999"><br>
+        Foto<br>
+        <input type="file" id="foto" name="foto"><br>
+        Acción<br>
+        <select id="cboAccion" name="accion">
+            <option value="agregar">Agregar</option>
+            <option value="listar">Listar</option>
+            <option value="verificar">Verificar</option>
+            <option value="modificar">Modificar</option>
+            <option value="borrar">Borrar</option>
+            <option value="obtener">Obtener</option>
+            <option value="redirigir">Redirigir</option>
+        </select>
+        <br>
+        <br>
+        <input type="submit" value="Enviar" id="btnEnviar" >
+    </form>
+</body>
+</html>
