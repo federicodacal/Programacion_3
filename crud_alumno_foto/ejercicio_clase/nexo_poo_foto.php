@@ -19,7 +19,7 @@ switch($accion)
 
         if(isset($foto))
         {
-            $pathFoto = subirFoto($foto, $legajo);
+            $pathFoto = Alumno::subirFoto($foto, $legajo);
         }
 
         $alumno = new Alumno($nombre, $apellido, $legajo, $pathFoto);
@@ -60,7 +60,7 @@ switch($accion)
 
         if(isset($foto))
         {
-            $pathFoto = subirFoto($foto, $legajo);
+            $pathFoto = Alumno::subirFoto($foto, $legajo);
         }
         
         $alumno = new Alumno($nombre, $apellido, $legajo, $pathFoto);
@@ -108,6 +108,13 @@ switch($accion)
         $alumno = Alumno::verificar($legajo);
         if(isset($alumno))
         {
+            session_start();
+
+            $_SESSION["nombre"] = $alumno->nombre;
+            $_SESSION["apellido"] = $alumno->apellido;
+            $_SESSION["legajo"] = $alumno->legajo;
+            $_SESSION["foto"] = $alumno->foto;
+
             header("Location: ../principal.php");
         }
         else 
@@ -117,37 +124,5 @@ switch($accion)
 
         break;
 }
-
-function subirFoto(array $foto, int $legajo) : string 
-{
-    if(isset($foto))
-    {
-        $upload = false;
-        
-        $nombre = $_FILES["foto"]["name"];
-        $extension = pathinfo($nombre, PATHINFO_EXTENSION);
-        $path = "../fotos/" . $legajo . "." . $extension;
-
-        $esImagen = getimagesize($_FILES["foto"]["tmp_name"]);
-        if($esImagen)
-        {
-            if($extension == "jpg" || $extension == "jpeg" || $extension == "png")
-            {
-                $upload = true;
-            }
-        }
-
-        if($upload === false)
-        {
-            $path = "Sin foto";
-        }
-        else 
-        {
-            move_uploaded_file($_FILES["foto"]["tmp_name"], $path);
-        }
-    }
-    return $path;
-}
-
 
 ?>

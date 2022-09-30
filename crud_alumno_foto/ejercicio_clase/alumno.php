@@ -167,6 +167,7 @@ class Alumno
 
 				if ($legajoArchivo == $legajo) 
 				{	
+					Alumno::borrarFoto($fotoArchivo);
 					continue; 
 				}
 
@@ -194,6 +195,47 @@ class Alumno
 
         return $rta;
     }
+
+	static function subirFoto(array $foto, int $legajo) : string 
+	{
+    	if(isset($foto))
+    	{
+			$upload = false;
+			
+			$nombre = $_FILES["foto"]["name"];
+			$extension = pathinfo($nombre, PATHINFO_EXTENSION);
+			$path = "../fotos/" . $legajo . "." . $extension;
+
+			$esImagen = getimagesize($_FILES["foto"]["tmp_name"]);
+			if($esImagen)
+			{
+				if($extension == "jpg" || $extension == "jpeg" || $extension == "png")
+				{
+					$upload = true;
+				}
+			}
+
+			if($upload === false)
+			{
+				$path = "Sin foto";
+			}
+			else 
+			{
+				move_uploaded_file($_FILES["foto"]["tmp_name"], $path);
+			}
+    	}
+    	return $path;
+	}
+
+	static function borrarFoto(string $foto) : bool 
+	{
+		$ok = false;
+		if(isset($foto))
+		{
+			$ok = unlink($foto);
+		}
+		return $ok;
+	}
 
 }
 
