@@ -68,7 +68,7 @@ switch($tipoEjemplo)
 		$ar = fopen("./archivos/miArchivo.txt", "r");
 
 		//LEO LINEA X LINEA DEL ARCHIVO 
-		while( ! feof($ar))
+		while(!feof($ar))
 		{
 			echo "<h2>" . fgets($ar) . "</h2>";
 		}
