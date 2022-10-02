@@ -8,11 +8,12 @@
 </head>
 <body>
     <?php
+
         session_start();
 
-        //require_once("./ejercicio_clase/alumno.php");
+        require_once("./ejercicio_clase/alumno.php");
 
-        //use Apellido\Alumno;
+        use Apellido\Alumno;
 
         if(isset($_SESSION["legajo"]) && isset($_SESSION["nombre"]) && isset($_SESSION["apellido"]) && isset($_SESSION["foto"])) 
         {
@@ -31,8 +32,22 @@
             echo "<h2>Apellido: {$apellido}</h1>";
             echo "<h2>Foto: {$pathFoto}</h1>";
             echo "<img src='{$pathFoto}' width=200px<br><hr><br>";
-
+            
             var_dump($_SESSION);
+
+            $alumnos = Alumno::traerAlumnos();
+            
+            echo "<table>";
+            foreach ($alumnos as $alumno) {
+                echo "<tr>
+                    <td>$alumno->legajo</td>
+                    <td>$alumno->nombre</td>
+                    <td>$alumno->apellido</td>
+                    <td>$alumno->foto</td>
+                  </tr>";
+              }
+              echo" </table>"; 
+
         }
         else 
         {

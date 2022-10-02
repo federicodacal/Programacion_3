@@ -56,6 +56,35 @@ class Alumno
         return $mensaje;
     }
 
+	public static function traerAlumnos() : array 
+	{
+		$alumnos = array();
+
+		$ar = fopen("./archivos/alumnos.txt", "r");
+
+        while(!feof($ar))
+		{
+			$linea = fgets($ar);
+			$array_linea = explode("-", $linea);
+
+			$array_linea[0] = trim($array_linea[0]);
+
+			if($array_linea[0] != "")
+            {
+				$legajoAlumno = trim($array_linea[0]);
+				$nombreAlumno = trim($array_linea[1]);
+				$apellidoAlumno = trim($array_linea[2]);
+				$fotoAlumno = trim($array_linea[3]);
+
+				$alumno = new Alumno($nombreAlumno, $apellidoAlumno, $legajoAlumno, $fotoAlumno);
+				array_push($alumnos, $alumno);
+			}
+		}
+        fclose($ar);
+
+        return $alumnos;
+	}
+
     public static function verificar(int $legajo) :  Alumno | NULL
     {
         $alumno = NULL;
@@ -84,6 +113,9 @@ class Alumno
 
 			}
 		}
+
+		fclose($ar);
+
         return $alumno;
     }
     
