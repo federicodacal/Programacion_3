@@ -41,13 +41,12 @@ class AlumnoPDO
     {
         $objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso();
         
-        $consulta =$objetoAccesoDato->retornarConsulta("INSERT INTO alumnos (legajo, nombre, apellido, foto)"
-                                                    . "VALUES(:legajo, :nombre, :apellido, :foto)");
+        $consulta =$objetoAccesoDato->retornarConsulta("INSERT INTO alumnos (legajo, nombre, apellido, foto)" . "VALUES(:legajo, :nombre, :apellido, :foto)");
         
         $consulta->bindValue(':legajo', $alumno->legajo, PDO::PARAM_INT);
         $consulta->bindValue(':nombre', $alumno->nombre, PDO::PARAM_STR);
-        $consulta->bindValue(':foto', $alumno->foto, PDO::PARAM_STR);
         $consulta->bindValue(':apellido', $alumno->apellido, PDO::PARAM_STR);
+        $consulta->bindValue(':foto', $alumno->foto, PDO::PARAM_STR);
 
         $rta = $consulta->execute();
         
@@ -85,8 +84,7 @@ class AlumnoPDO
 
         $objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso();
         
-        $consulta =$objetoAccesoDato->retornarConsulta("UPDATE alumnos SET nombre = :nombre, apellido = :apellido, 
-                                                        foto = :foto WHERE legajo = :legajo");
+        $consulta =$objetoAccesoDato->retornarConsulta("UPDATE alumnos SET nombre = :nombre, apellido = :apellido, foto = :foto WHERE legajo = :legajo");
         
         $consulta->bindValue(':legajo', $alumno->legajo, PDO::PARAM_INT);
         $consulta->bindValue(':nombre', $alumno->nombre, PDO::PARAM_STR);
@@ -119,6 +117,7 @@ class AlumnoPDO
             $pathFoto = $alumno->foto;
 
             $ok = $consulta->execute();
+
             if($ok && AlumnoPDO::obtener($legajo) == null)
             {
                 if(file_exists($pathFoto))
@@ -129,6 +128,45 @@ class AlumnoPDO
             }
         }
         return $rta;
+    }
+
+    public static function mostrarAlumnos() : string 
+    {
+        $respuesta = "";
+
+        $array_alumnos = AlumnoPDO::traerTodos();
+
+        if(isset($array_alumnos)) //&& count($array_alumnos) > 0)
+        {
+            $respuesta = 
+            "<table>
+                <tr>
+                    <th>Legajo</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Path Foto</th>
+                    <th>Foto</th>
+                </tr>";
+            
+            foreach($array_alumnos as $alumno)
+            {
+                $respuesta .=
+                "<tr>
+                    <th>{$alumno->legajo}</th>
+                    <th>{$alumno->nombre}</th>
+                    <th>{$alumno->apellido}</th>
+                    <th>{$alumno->foto}</th>
+                    <th><img src='". $alumno->foto . "'width=100 height=80></th>
+                </tr>";
+            }
+            $respuesta .= "</table>";
+        }
+        else 
+        {
+            $respuesta = "No se obtuvieron alumnos";
+        }
+
+        return $respuesta;
     }
 
 }

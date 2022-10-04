@@ -69,8 +69,7 @@ switch($accion)
                 echo "No encontrado";
             }
         
-        break;
-        
+        break;        
         
 	case "borrar":				
 
@@ -98,6 +97,16 @@ switch($accion)
             echo "No encontrado alumno con legajo {$legajo}";
         }
 
+        break;
+
+    case "mostrar":
+
+        echo AlumnoPDO::mostrarAlumnos();
+
+        break;
+
+    default:
+        echo ":(";
         break;
 }
 
@@ -130,7 +139,7 @@ function getPath(array $foto, int $legajo): string
 		}
 
 		//VERIFICO EL TAMAÑO MAXIMO QUE PERMITO SUBIR
-		if ($_FILES["foto"]["size"] > 100000) {
+		if ($_FILES["foto"]["size"] > 1000000) {
 			$uploadOk = FALSE;
 		}
 
