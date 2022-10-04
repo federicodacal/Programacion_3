@@ -9,14 +9,19 @@ class Producto
     public float $precio;
     public int $id;
 
-    public function __construct(string $codigoDeBarra, string $tipo, int $stock, float $precio, string $nombre, int $id = null)
+    public function __construct(string $codigoDeBarra, string $tipo, int $stock, float $precio, string $nombre, int $id = 0)
     {
         $this->codigoDeBarra = $codigoDeBarra;
         $this->tipo = $tipo;
         $this->stock = $stock;
         $this->precio = $precio;
         $this->nombre = $nombre;
-        if($id == null)
+        $this->setId($id);
+    }
+
+    private function setId(int $id) : void
+    {
+        if($id == 0)
         {
             $this->id = rand(1,1000);
         }
@@ -46,7 +51,7 @@ class Producto
         {
             foreach($lista as $prod)
             {
-                $mensaje .= $prod->toString() . "\n";
+                $mensaje .= $prod->toString() . "\n<br>";
             }
         }
         else 
@@ -63,8 +68,6 @@ class Producto
         $yaSeEncuentra = false;
 
         $lista = Producto::traerProductos();
-
-        echo count($lista);
 
         $ar = fopen("./productos.json", "w");
 
@@ -83,7 +86,7 @@ class Producto
             if(!$yaSeEncuentra) 
             {
                 array_push($lista, $prod);
-                echo "Ingresado";
+                echo "Ingresado<br>";
             }
             else 
             {
@@ -136,7 +139,8 @@ class Producto
             {
                 foreach($productosJson as $prod)
                 {
-                    array_push($productos, new Producto($prod["codigoDeBarra"], $prod["tipo"], $prod["stock"], $prod["precio"], $prod["nombre"]));
+                    //public function __construct(string $codigoDeBarra, string $tipo, int $stock, float $precio, string $nombre, int $id = 0)
+                    array_push($productos, new Producto($prod["codigoDeBarra"], $prod["tipo"], $prod["stock"], $prod["precio"], $prod["nombre"], $prod["id"]));
                 }        
             }
         }

@@ -35,14 +35,22 @@ $clave = isset($_POST["clave"]) ? $_POST["clave"] : NULL;
 $mail = isset($_POST["mail"]) ? $_POST["mail"] : NULL;
 $foto = isset($_FILES["foto"]) ? $_FILES["foto"] : NULL;
 
+$pathFoto = "";
+
 switch($accion)
 {
     case 'agregar':
 
         if(isset($nombre) && isset($clave) && isset($mail))
         {
-            $pathFoto = subirFoto($foto, $id=rand(1,1000));          
-            $user = new Usuario($nombre, $clave, $mail, $pathFoto);
+            $id=rand(1,1000);
+
+            if(isset($foto))
+            {
+                $pathFoto = getPath($foto, $id);
+            }
+            
+            $user = new Usuario($nombre, $clave, $mail, $pathFoto, "", $id);
 
             if(Usuario::agregar($user))
             {
@@ -82,7 +90,7 @@ switch($accion)
 }
 
 
-function subirFoto(array $foto, int $id) : string 
+function getPath(array $foto, int $id) : string 
 {
     if(isset($foto))
     {

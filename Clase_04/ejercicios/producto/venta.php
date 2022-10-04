@@ -3,6 +3,8 @@
 require_once "../registro_json/usuario.php";
 require_once "./producto.php";
 
+use Producto;
+
 class Venta 
 {
     public int $id;
@@ -12,9 +14,21 @@ class Venta
     public int $stock;
     public bool $exito;
 
-    public function __construct(int $idUsuario, string $codigoProducto, int $stock, bool $exito = false, int $id = null, string $fechaVenta = null)
+    public function __construct(int $idUsuario, string $codigoProducto, int $stock, bool $exito = false, int $id = 0, string $fechaVenta = "")
     {
-        if($id == null)
+
+        $this->idUsuario = $idUsuario;
+        $this->codigoProducto = $codigoProducto;
+        $this->stock = $stock;
+        $this->exito = $exito;
+        $this->setId($id);
+        $this->setFechaVenta($fechaVenta);
+        $this->vender();
+    }
+
+    private function setId(int $id) : void
+    {
+        if($id == 0)
         {
             $this->id = rand(1,1000);
         }
@@ -22,7 +36,10 @@ class Venta
         {
             $this->id = $id;
         }
+    }
 
+    private function setFechaVenta(string $fechaVenta) : void
+    {
         if($fechaVenta == null)
         {
             $this->fechaVenta = date("Y-m-d H:i:s");
@@ -31,20 +48,14 @@ class Venta
         {
             $this->fechaVenta = $fechaVenta;
         }
-
-        $this->idUsuario = $idUsuario;
-        $this->codigoProducto = $codigoProducto;
-        $this->stock = $stock;
-
-        $this->exito = $exito;
-
-        $this->vender();
     }
 
-    public function vender()
+    public function vender() : void
     {
+        $mensaje = "No se pudo realizar la venta. ";
+
         $listaProductos = Producto::traerProductos();
-        $listaUsuarios = Usuario::traerUsuariosJson();
+        $listaUsuarios = Usuario::traerUsuariosJson("../registro_json/archivos/usuarios.json");
 
         $existeUsuario = false;
 
@@ -59,24 +70,37 @@ class Venta
                 }
             }
 
-            foreach($listaProductos as $prod)
+            if($existeUsuario)
             {
-                if($existeUsuario && $prod->codigoDeBarra == $this->codigoProducto && $prod->stock > 0)
+                foreach($listaProductos as $prod)
                 {
-                    if($prod->stock -= $this->stock >= 0)
+                    if($prod->codigoDeBarra === $this->codigoProducto && $prod->stock > 0)
                     {
-                        $prod->stock -= $this->stock;
-                        Producto::agregar($prod);
-                        $this->exito = true;
-                        if(Venta::guardarJson($this))
+                        $stockResultante = $prod->stock - $this->stock;
+                        if($stockResultante >= 0)
                         {
-                            echo "Vendido!";
+                            $prod->stock -= intval($this->stock);
+                            if(Venta::guardarJson($this))
+                            {
+                                $mensaje = "Vendido!";
+                                break;
+                            }
                         }
+                        else 
+                        {
+                            $mensaje .= "No alcanza el stock";
+                        }
+                        
                     }
-                    break;
                 }
             }
+            else 
+            {
+                $mensaje .= "No existe el usuario";
+            }
         }
+
+        echo $mensaje;
     }
 
     private static function guardarJson(Venta $venta) : bool
@@ -85,7 +109,7 @@ class Venta
 
         $lista = venta::traerVentasJson();
 
-        $ar = fopen("./archivos/ventas.json", "w");
+        $ar = fopen("./ventas.json", "w");
 
         if(isset($lista))
         {
@@ -113,6 +137,13 @@ class Venta
     public static function traerVentasJson() : array 
     {
         $ventas = array();
+
+        if(!file_exists("./ventas.json"))
+        {
+            $newFile = fopen("./ventas.json", "w");
+
+            fclose($newFile);
+        }
 
         $ar = fopen("./ventas.json", "r");
 

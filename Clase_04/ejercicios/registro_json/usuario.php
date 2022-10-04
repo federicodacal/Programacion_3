@@ -11,6 +11,18 @@ class Usuario
 
     public function __construct(string $nombre, string $clave, string $mail, string $foto = null, string $fechaRegistro = null, int $id = null)
     {
+
+        $this->nombre = $nombre;
+        $this->clave = $clave;
+        $this->mail = $mail;
+        $this->setId($id);
+        $this->setFechaRegistro($fechaRegistro);
+        $this->setfoto($foto);
+
+    }
+
+    private function setId(int $id) : void 
+    {
         if($id == null)
         {
             $this->id = rand(1,1000);
@@ -19,20 +31,22 @@ class Usuario
         {
             $this->id = $id;
         }
+    }
 
-        $this->nombre = $nombre;
-        $this->clave = $clave;
-        $this->mail = $mail;
-
-        if($fechaRegistro == null)
+    private function setFechaRegistro(string $fecha)
+    {
+        if($fecha == null)
         {
             $this->fechaRegistro = date("Y-m-d H:i:s");
         }
         else 
         {
-            $this->fechaRegistro = $fechaRegistro;
+            $this->fechaRegistro = $fecha;
         }
+    }
 
+    private function setFoto(string $foto)
+    {
         if($foto == null)
         {
             $this->foto = "./archivos/fotos/default.png";
@@ -94,7 +108,6 @@ class Usuario
 
         if($cant > 0)
         {
-            echo "JSON!";
             $rta = true;
         }
 
@@ -122,13 +135,13 @@ class Usuario
         return $mensaje;
     }
 
-    public static function traerUsuariosJson() : array 
+    public static function traerUsuariosJson(string $file = "./archivos/usuarios.json") : array 
     {
         $usuarios = array();
 
-        $ar = fopen("./archivos/usuarios.json", "r");
+        $ar = fopen($file, "r");
 
-        $filesize = filesize("./archivos/usuarios.json");
+        $filesize = filesize($file);
 
         if($filesize > 0)
         {
@@ -158,63 +171,66 @@ class Usuario
 
         if(count($usuarios) > 0)
         {
-            $mensaje =  "<ul>";
+            $mensaje = "<h3>Lista usuarios</h3>";
+            $mensaje .=  "<ul>";
             foreach($usuarios as $user)
             {
                 $mensaje .= "<li>" . $user->toString();
-                $mensaje .= "<br><img src=". $user->foto . "width=100 height=80>";
+                $mensaje .= "<br><img src='". $user->foto . "'width=100 height=80>";
                 $mensaje .= "</li>";
                 $mensaje .= "<hr>";
             }
             $mensaje .= "</ul>";
         }
-
-        var_dump($usuarios);
-
+        
         return $mensaje;
     }
 
     public static function listar() : string
     {
-        $mensaje = "";
+        $mensaje = "No hay usuarios";
         $usuarios = array();
 
-        $ar = fopen("./archivos/usuarios.csv", "r");
-
-        while(!feof($ar))
+        if(file_exists('./archivos/usuarios.csv'))
         {
-            $registro = fgets($ar);
-            $arrayRegistro = explode(",", $registro);
+            $ar = fopen("./archivos/usuarios.csv", "r");
 
-            if($arrayRegistro[0] != "")
+            while(!feof($ar))
             {
-                $nombre = $arrayRegistro[0];
-                $clave = $arrayRegistro[1];
-                $mail = $arrayRegistro[2];
-                $id = $arrayRegistro[3];
-                $fecha = $arrayRegistro[4];
-                $foto = $arrayRegistro[5];
-
-                $usuario = new Usuario($nombre,$clave,$mail,$foto,$fecha,$id);
-                array_push($usuarios, $usuario);
+                $registro = fgets($ar);
+                $arrayRegistro = explode(",", $registro);
+    
+                if($arrayRegistro[0] != "")
+                {
+                    $nombre = $arrayRegistro[0];
+                    $clave = $arrayRegistro[1];
+                    $mail = $arrayRegistro[2];
+                    $id = $arrayRegistro[3];
+                    $fecha = $arrayRegistro[4];
+                    $foto = $arrayRegistro[5];
+    
+                    $usuario = new Usuario($nombre,$clave,$mail,$foto,$fecha,$id);
+                    array_push($usuarios, $usuario);
+                }
+            }
+    
+            fclose($ar);
+    
+            if(count($usuarios) > 0)
+            {
+                $mensaje =  "<ul>";
+                foreach($usuarios as $user)
+                {
+                    $mensaje .= "<li>" . $user->toString();
+                    $mensaje .= "<br><img src=". $user->foto . "width=100 height=80>";
+                    $mensaje .= "</li>";
+                    $mensaje .= "<hr>";
+                }
+                $mensaje .= "</ul>";
             }
         }
 
-        fclose($ar);
-
-        if(count($usuarios) > 0)
-        {
-            $mensaje =  "<ul>";
-            foreach($usuarios as $user)
-            {
-                $mensaje .= "<li>" . $user->toString();
-                $mensaje .= "<br><img src=". $user->foto . "width=100 height=80>";
-                $mensaje .= "</li>";
-                $mensaje .= "<hr>";
-            }
-            $mensaje .= "</ul>";
-        }
-
+    
         return $mensaje;
     }
 
