@@ -14,9 +14,10 @@ if(isset($nombre) && isset($clave) && isset($correo))
 {
     $usuario = new Usuario($nombre, $correo, $clave);
     
-    if($usuario->GuardarEnArchivo())
-    {
-        echo "Usuario guardado";
+    if($response = $usuario->GuardarEnArchivo())
+    {   
+        echo $response;
+        echo "\nUsuario guardado";
     }
     else 
     {

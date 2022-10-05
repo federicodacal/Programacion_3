@@ -25,7 +25,7 @@ class Empleado extends Usuario implements ICRUD
 
         $objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso();
         
-        $consulta = $objetoAccesoDato->retornarConsulta("SELECT * FROM empleados e INNER JOIN perfiles p ON e.id_perfil = p.id");        
+        $consulta = $objetoAccesoDato->retornarConsulta("SELECT e.id, e.nombre, e.correo, e.clave, e.id_perfil, e.foto, e.sueldo, p.descripcion FROM empleados e INNER JOIN perfiles p ON e.id_perfil = p.id");        
         
         $consulta->execute();
                 
@@ -37,9 +37,10 @@ class Empleado extends Usuario implements ICRUD
             $clave = $fila["clave"];
             $id_perfil = $fila["id_perfil"];
             $perfil = $fila["descripcion"];
+            $foto = $fila["foto"];
+            $sueldo = $fila["sueldo"];
 
-            $empleado = new Empleado($nombre, $correo, $clave, $id_perfil, $perfil, $id); 
-
+            $empleado = new Empleado($nombre, $correo, $clave, $id_perfil, $perfil, $id, $foto, $sueldo);
             array_push($empleados, $empleado);
         }
 
@@ -55,7 +56,6 @@ class Empleado extends Usuario implements ICRUD
             . "VALUES(:nombre, :correo, :clave, :id_perfil, :foto, :sueldo)"
         );
 
-        // $consulta->bindValue(":id", $this->id, PDO::PARAM_INT);
         $consulta->bindValue(":nombre", $this->nombre, PDO::PARAM_STR);
         $consulta->bindValue(":correo", $this->correo, PDO::PARAM_STR);
         $consulta->bindValue(":clave", $this->clave, PDO::PARAM_STR);
@@ -87,10 +87,12 @@ class Empleado extends Usuario implements ICRUD
         $consulta->bindValue(":id_perfil", $this->id_perfil, PDO::PARAM_INT);
         $consulta->bindValue(":foto", $this->foto, PDO::PARAM_STR);
         $consulta->bindValue(":sueldo", $this->sueldo, PDO::PARAM_INT);
+
         $consulta->execute();
 
-        $total_modificado = $consulta->rowCount();
-        if($total_modificado == 1) {
+        $affectedRows = $consulta->rowCount();
+        if($affectedRows == 1) 
+        {
             $retorno = true;
         }
 
@@ -111,6 +113,51 @@ class Empleado extends Usuario implements ICRUD
         }
 
 		return $retorno;
+    }
+
+    public static function MostrarTablaBD() : string
+    {
+        $response = "";
+
+        $empleados = Empleado::TraerTodos();
+
+        if(isset($empleados)) //&& count($empleados) > 0)
+        {
+            $response = 
+            "<table>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Perfil</th>
+                    <th>Descripcion</th>
+                    <th>Sueldo</th>
+                    <th>Path Foto</th>
+                    <th>Foto</th>
+                </tr>";
+            
+            foreach($empleados as $emp)
+            {
+                $response .=
+                "<tr>
+                    <th>{$emp->id}</th>
+                    <th>{$emp->nombre}</th>
+                    <th>{$emp->correo}</th>
+                    <th>{$emp->id_perfil}</th>
+                    <th>{$emp->perfil}</th>
+                    <th>\${$emp->sueldo}</th>
+                    <th>{$emp->foto}</th>
+                    <th><img src='." . $emp->foto . "' alt='Nope' width=50px height=50px></th>
+                    </tr>";
+            }
+            $response .= "</table>";
+        }
+        else 
+        {
+            $response = "No se obtuvieron empleados";
+        }
+
+        return $response;
     }
 }
 

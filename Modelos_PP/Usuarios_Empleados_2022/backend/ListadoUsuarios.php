@@ -6,21 +6,14 @@ require_once "./clases/Usuario.php";
 use PrimerParcial\Usuario;
 use PrimerParcial\AccesoDatos;
 
-$usuarios = Usuario::TraerTodos();
+$tabla = isset($_GET["tabla"]) ? $_GET["tabla"] : NULL;
 
-if(isset($usuarios) && count($usuarios) > 0)
+if(isset($tabla))
 {
-    echo "<ul>";
-    foreach($usuarios as $usuario)
+    if($tabla == 'mostrar')
     {
-        echo "<li>" . $usuario->ToJSON() . "</li>";
+        echo Usuario::MostrarTablaBD();
     }
-    echo "<ul>";
 }
-else 
-{
-    echo "No hay usuarios";
-}
-
 
 ?>
