@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 require_once "./clases/accesoDatos.php";
 require_once "./clases/neumatico.php";
@@ -8,52 +8,57 @@ use Dacal\Federico\Neumatico;
 use Dacal\Federico\NeumaticoBD;
 use Dacal\Federico\AccesoDatos;
 
-$marca = isset($_POST["marca"]) ? $_POST["marca"] : NULL;
-$medidas = isset($_POST["medidas"]) ? $_POST["medidas"] : NULL;
-$precio = isset($_POST["precio"]) ? (float) $_POST["precio"] : 0;
+$neumatico_json = isset($_POST["neumatico_json"]) ? $_POST["neumatico_json"] : NULL;
 $foto = isset($_FILES["foto"]) ? $_FILES["foto"] : NULL;
 
 $exito = false;
 $mensaje = "Hubo un problema";
 
-$pathFoto = "";
 
-
-if(isset($marca) && isset($medidas) && isset($precio) && isset($foto))
+if(isset($neumatico_json) && isset($foto))
 {
-	$pathFoto = getPath($foto, $marca);
+    $obj = json_decode($neumatico_json, true);
     
-	$neumatico = new NeumaticoBD($marca, $medidas, $precio, $pathFoto);
+    $pathFoto = getPath($foto, $obj["marca"]);
 
-	$neumaticos = NeumaticoBD::traer();
+    $neumaticoEnBd = NeumaticoBD::traerPorId($obj["id"]);
+    $pathViejo = $neumaticoEnBd->GetPathFoto();
 
-	if(!$neumatico->existe($neumaticos))
-	{
-		
-		if($neumatico->agregar())
-		{
-			$exito = true;
-			guardarImagen($pathFoto);
-			$mensaje = "Agregado";
-		}
-		else 
-		{
-			$mensaje = "No se agregó";
-		}
-	}
-	else 
-	{
-		$mensaje = "Ya existe en la base de datos";
-	}
-}
-else 
-{
-    $mensaje = "Faltan parametros";
+    if(isset($neumaticoEnBd))
+    {
+        $neumatico = new NeumaticoBD($obj["marca"], $obj["medidas"], $obj["precio"], 
+        $pathFoto, $obj["id"]);
+        
+        if($neumatico->modificar())
+        {
+            $exito = true;
+            $mensaje = "Neumatico modificado\n";
+            
+            if(guardarImagen($pathFoto))
+            {
+                $mensaje .= "Se guardó foto nueva OK\n";
+            }
+
+            $extensionFoto = pathinfo($neumatico->GetPathFoto(), PATHINFO_EXTENSION);
+
+            $nuevoPathFoto = './neumaticosModificados/' . $neumatico->GetId() . "." . $neumatico->GetMarca() . "." . "modificado" . "." . date("His") . "." . $extensionFoto;
+
+            if(rename($pathViejo, $nuevoPathFoto))
+            {
+                $mensaje .= "Se movió foto vieja OK\n";
+            }
+        }
+        else 
+        {
+            $mensaje = "No se modificó";
+        }
+    }
 }
 
 $response = array("exito"=>$exito, "mensaje"=>$mensaje);
 
 echo json_encode($response);
+
 
 function getPath(array $foto, string $marca): string
 {

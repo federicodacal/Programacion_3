@@ -22,8 +22,8 @@ if(isset($neumatico_json))
     if(NeumaticoBD::eliminar($neumatico->GetId()))
     {
         $exito = true;
-        $mensaje = "Neumatico eliminado";
-        $neumatico->guardarJSON('./archivos/neumaticos_eliminados.json');
+        $mensaje = "Neumatico eliminado\n";  
+        $mensaje .= $neumatico->guardarJSON('./archivos/neumaticos_eliminados.json');
     }
     else 
     {

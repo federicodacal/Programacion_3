@@ -1,0 +1,1 @@
+21,FateO,200-55-R20,60000,./neumaticosBorrados/21.FateO.borrado.jpg

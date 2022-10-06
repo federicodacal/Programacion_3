@@ -15,7 +15,21 @@ $mensaje = "Hubo un problema";
 
 if(isset($obj_neumatico))
 {
-    
+    $obj = json_decode($obj_neumatico, true);
+
+    $neumatico = new NeumaticoBD($obj["marca"], $obj["medidas"]);
+
+    $neumaticos = NeumaticoBD::traer();
+
+    if($neumatico->existe($neumaticos))
+    {
+        $exito = true;
+        $mensaje .= $neumatico->toJSON();  
+    }
+    else 
+    {
+        $mensaje = "{}";
+    }
 }
 
 $response = array("exito"=>$exito, "mensaje"=>$mensaje);
