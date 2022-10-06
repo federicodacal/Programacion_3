@@ -107,7 +107,7 @@ class NeumaticoBD extends Neumatico implements IParte1, IParte2, IParte3, IParte
                     <th>{$n->medidas}</th>
                     <th>{$n->precio}</th>
                     <th>{$n->pathFoto}</th>
-                    <th><img src='." . $n->pathFoto . "' alt='Sin Foto' width=50px height=50px></th>
+                    <th><img src='" . $n->pathFoto . "' alt='Sin Foto' width='50px' height='50px'></th>
                 </tr>";
             }
             $response .= "</table>";

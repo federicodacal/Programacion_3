@@ -22,11 +22,12 @@ if(isset($tabla) && $tabla == 'tabla')
 else 
 {
     $json_array = array();
+
     foreach($neumaticos as $n)
     {
-        array_push($json_array, $n->ToJSON());
-        echo $n->toJSON() . "\n";
+        array_push($json_array, json_decode($n->ToJSON(), true));
     }
+
     echo json_encode($json_array);
 }
 

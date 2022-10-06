@@ -15,18 +15,12 @@ $mensaje = "Hubo un problema";
 if(isset($marca) && isset($medidas))
 {
     $neumatico = new Neumatico($marca, $medidas);
-    $cadena = Neumatico::verificarNeumaticoJSON($neumatico);
+    $json = json_decode(Neumatico::verificarNeumaticoJSON($neumatico), true);
 
-    if(isset($neumatico))
+    if(isset($json))
     {
-        $exito = true;
-        $mensaje = "Neumatico encontrado\n";
-        $mensaje .= $cadena;
-    }
-    else 
-    {
-        $mensaje = "No se encontró\n";
-        $mensaje .= $cadena;
+        $exito = $json["exito"];
+        $mensaje = $json["mensaje"];;
     }
 }
 
