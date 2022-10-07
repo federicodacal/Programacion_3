@@ -12,10 +12,10 @@ $uploadOk = TRUE;
 //PATHINFO_EXTENSION - retorna solo extension
 //PATHINFO_FILENAME - retorna solo el nombre del archivo (sin la extension)
 
-var_dump(pathinfo($destino));die();
+var_dump(pathinfo($destino)); //die();
 
 $tipoArchivo = pathinfo($destino, PATHINFO_EXTENSION);
-echo $tipoArchivo;die();
+echo $tipoArchivo; //die();
 
 //VERIFICO QUE EL ARCHIVO NO EXISTA
 if (file_exists($destino)) {
@@ -29,7 +29,7 @@ if ($_FILES["archivo"]["size"] > 50000 ) {
 }
 
 //VERIFICO SI ES UNA IMAGEN O NO
-var_dump(getimagesize($_FILES["archivo"]["tmp_name"])) ;die();
+var_dump(getimagesize($_FILES["archivo"]["tmp_name"])); //die();
 
 //OBTIENE EL TAMAÑO DE UNA IMAGEN, SI EL ARCHIVO NO ES UNA IMAGEN, RETORNA FALSE
 $esImagen = getimagesize($_FILES["archivo"]["tmp_name"]);
