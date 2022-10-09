@@ -23,11 +23,20 @@ if(isset($nombre) && isset($correo) && isset($clave) && isset($id_perfil) && iss
     $path = getPath($foto, $nombre);
 
     $empleado = new Empleado($nombre, $correo, $clave, $id_perfil, "", 0, $path, $sueldo);
+
     if($empleado->Agregar())
     {
         $exito = true;
-        $mensaje = "Se agregó";
-        guardarImagen($path);
+        $mensaje = "Se agregó empleado. ";
+        
+		if(guardarImagen($path))
+		{
+			$mensaje .= "Foto OK";
+		}
+		else 
+		{
+			$mensaje .= "No Foto";
+		}
     }
 }
 

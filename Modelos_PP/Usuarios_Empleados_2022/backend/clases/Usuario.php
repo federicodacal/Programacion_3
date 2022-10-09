@@ -55,7 +55,7 @@ class Usuario implements IBM
         if($cant > 0)
         {
             $exito = true;
-            $mensaje = "Usuario {$this->id} guardado con éxito";
+            $mensaje = "Usuario guardado con éxito";
         }
 
         fclose($ar);
@@ -135,7 +135,7 @@ class Usuario implements IBM
     {
         $objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso();
         
-        $consulta =$objetoAccesoDato->retornarConsulta("INSERT INTO usuarios (nombre, correo, clave, id_perfil)" . "VALUES(:nombre, :correo, :clave, :id_perfil)");
+        $consulta = $objetoAccesoDato->retornarConsulta("INSERT INTO usuarios (nombre, correo, clave, id_perfil)" . "VALUES(:nombre, :correo, :clave, :id_perfil)");
         
         $consulta->bindValue(':nombre', $this->nombre, PDO::PARAM_STR);
         $consulta->bindValue(':correo', $this->correo, PDO::PARAM_STR);
@@ -190,7 +190,8 @@ class Usuario implements IBM
     
             $consulta->execute();
     
-            if($fila = $consulta->fetch(PDO::FETCH_ASSOC)) {
+            if($fila = $consulta->fetch(PDO::FETCH_ASSOC)) 
+            {
                 $id = $fila["id"];
                 $nombre = $fila["nombre"];
                 $correo = $fila["correo"];
@@ -262,7 +263,8 @@ class Usuario implements IBM
         if(isset($usuarios)) //&& count($usuarios) > 0)
         {
             $response = 
-            "<table>
+            "<table border = 1>
+                <caption>Listado de usuarios</caption>
                 <tr>
                     <th>ID</th>
                     <th>Nombre</th>
@@ -275,11 +277,11 @@ class Usuario implements IBM
             {
                 $response .=
                 "<tr>
-                    <th>{$usuario->id}</th>
-                    <th>{$usuario->nombre}</th>
-                    <th>{$usuario->correo}</th>
-                    <th>{$usuario->id_perfil}</th>
-                    <th>{$usuario->perfil}</th>
+                    <td>{$usuario->id}</td>
+                    <td>{$usuario->nombre}</td>
+                    <td>{$usuario->correo}</td>
+                    <td>{$usuario->id_perfil}</td>
+                    <td>{$usuario->perfil}</td>
                 </tr>";
             }
             $response .= "</table>";

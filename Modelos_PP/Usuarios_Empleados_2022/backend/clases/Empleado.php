@@ -66,7 +66,6 @@ class Empleado extends Usuario implements ICRUD
         $retorno = $consulta->execute();
         
         return $retorno;
-
     }
 
     public function Modificar(): bool
@@ -88,10 +87,10 @@ class Empleado extends Usuario implements ICRUD
         $consulta->bindValue(":foto", $this->foto, PDO::PARAM_STR);
         $consulta->bindValue(":sueldo", $this->sueldo, PDO::PARAM_INT);
 
-        $consulta->execute();
+        $ok = $consulta->execute();
 
         $affectedRows = $consulta->rowCount();
-        if($affectedRows == 1) 
+        if($ok && $affectedRows == 1) 
         {
             $retorno = true;
         }
@@ -102,13 +101,19 @@ class Empleado extends Usuario implements ICRUD
     public static function Eliminar(int $id): bool
     {
         $retorno = false;
+
 		$accesoDatos = AccesoDatos::dameUnObjetoAcceso();
+
 		$consulta = $accesoDatos->retornarConsulta("DELETE FROM empleados WHERE id = :id");
+
 		$consulta->bindValue(":id", $id, PDO::PARAM_INT);
-        $consulta->execute();
+
+        $rta = $consulta->execute();
         
-        $total_borrado = $consulta->rowCount();
-        if($total_borrado == 1) {
+        $affectedRows = $consulta->rowCount();
+
+        if($rta && $affectedRows == 1) 
+        {
             $retorno = true;
         }
 
@@ -124,7 +129,8 @@ class Empleado extends Usuario implements ICRUD
         if(isset($empleados)) //&& count($empleados) > 0)
         {
             $response = 
-            "<table>
+            "<table border = 1>
+                <caption>Listado de empleados</caption>
                 <tr>
                     <th>ID</th>
                     <th>Nombre</th>
@@ -140,14 +146,14 @@ class Empleado extends Usuario implements ICRUD
             {
                 $response .=
                 "<tr>
-                    <th>{$emp->id}</th>
-                    <th>{$emp->nombre}</th>
-                    <th>{$emp->correo}</th>
-                    <th>{$emp->id_perfil}</th>
-                    <th>{$emp->perfil}</th>
-                    <th>\${$emp->sueldo}</th>
-                    <th>{$emp->foto}</th>
-                    <th><img src='." . $emp->foto . "' alt='Nope' width=50px height=50px></th>
+                    <td>{$emp->id}</td>
+                    <td>{$emp->nombre}</td>
+                    <td>{$emp->correo}</td>
+                    <td>{$emp->id_perfil}</td>
+                    <td>{$emp->perfil}</td>
+                    <td>\${$emp->sueldo}</td>
+                    <td>{$emp->foto}</td>
+                    <td><img src='." . $emp->foto . "' alt='Nope' width=50px height=50px></td>
                     </tr>";
             }
             $response .= "</table>";

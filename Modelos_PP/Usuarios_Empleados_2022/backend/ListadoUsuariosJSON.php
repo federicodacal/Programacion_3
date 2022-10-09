@@ -8,13 +8,4 @@ use PrimerParcial\AccesoDatos;
 
 echo Usuario::UsuariosToJSON();
 
-/*
-$usuarios = Usuario::TraerTodosJSON();
-
-foreach($usuarios as $usuario)
-{
-    echo $usuario->ToJSON() . "\n\n";
-}
-*/
-
 ?>

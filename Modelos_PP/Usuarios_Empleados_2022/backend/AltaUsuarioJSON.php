@@ -13,15 +13,10 @@ $correo = isset($_POST["correo"]) ? $_POST["correo"] : NULL;
 if(isset($nombre) && isset($clave) && isset($correo))
 {
     $usuario = new Usuario($nombre, $correo, $clave);
-    
-    if($response = $usuario->GuardarEnArchivo())
-    {   
-        echo $response;
-        echo "\nUsuario guardado";
-    }
-    else 
+
+    if(isset($usuario))
     {
-        echo "Hubo un problema";
+        echo $usuario->GuardarEnArchivo();
     }
 }
 
