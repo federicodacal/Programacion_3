@@ -19,11 +19,16 @@ if(isset($neumatico_json))
 
     $neumatico = new NeumaticoBD($obj["marca"], $obj["medidas"], $obj["precio"], "", $obj["id"]);
 
-    if(NeumaticoBD::eliminar($neumatico->GetId()))
+    if(NeumaticoBD::eliminar($neumatico->getId()))
     {
         $exito = true;
-        $mensaje = "Neumatico eliminado\n";  
-        $mensaje .= $neumatico->guardarJSON('./archivos/neumaticos_eliminados.json');
+        $mensaje = "Neumatico eliminado. ";  
+
+        $response = $neumatico->guardarJSON('./archivos/neumaticos_eliminados.json');
+
+        $objResponse = json_decode($response, true);
+
+        $mensaje .= $objResponse["mensaje"];
     }
     else 
     {

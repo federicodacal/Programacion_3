@@ -15,6 +15,7 @@ $mensaje = "Hubo un problema";
 if(isset($marca) && isset($medidas))
 {
     $neumatico = new Neumatico($marca, $medidas);
+    
     $json = json_decode(Neumatico::verificarNeumaticoJSON($neumatico), true);
 
     if(isset($json))

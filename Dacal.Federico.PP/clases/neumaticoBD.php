@@ -22,12 +22,12 @@ class NeumaticoBD extends Neumatico implements IParte1, IParte2, IParte3, IParte
         $this->id = $id;
     }
 
-    public function GetId() : int
+    public function getId() : int
     {
         return $this->id;
     }
 
-    public function GetPathFoto() : string 
+    public function getPathFoto() : string 
     {
         return $this->pathFoto;
     }
@@ -88,7 +88,8 @@ class NeumaticoBD extends Neumatico implements IParte1, IParte2, IParte3, IParte
         if(isset($neumaticos)) //&& count($neumaticos) > 0)
         {
             $response = 
-            "<table>
+            "<table border = 1>
+                <caption>Listado de neumaticos</caption>
                 <tr>
                     <th>ID</th>
                     <th>Marca</th>
@@ -102,12 +103,12 @@ class NeumaticoBD extends Neumatico implements IParte1, IParte2, IParte3, IParte
             {
                 $response .=
                 "<tr>
-                    <th>{$n->id}</th>
-                    <th>{$n->marca}</th>
-                    <th>{$n->medidas}</th>
-                    <th>{$n->precio}</th>
-                    <th>{$n->pathFoto}</th>
-                    <th><img src='" . $n->pathFoto . "' alt='Sin Foto' width='50px' height='50px'></th>
+                    <td>{$n->id}</td>
+                    <td>{$n->marca}</td>
+                    <td>{$n->medidas}</td>
+                    <td>{$n->precio}</td>
+                    <td>{$n->pathFoto}</td>
+                    <td><img src='" . $n->pathFoto . "' alt='Sin Foto' width='50px' height='50px'></td>
                 </tr>";
             }
             $response .= "</table>";
@@ -187,9 +188,10 @@ class NeumaticoBD extends Neumatico implements IParte1, IParte2, IParte3, IParte
         return $rta; 
     }
 
-    public function guardarEnArchivo() : bool 
+    public function guardarEnArchivo() : string 
     {
-        $rta = false;
+        $exito = false;
+        $mensaje = "Hubo un problema";
 
         $path = './archivos/neumaticosbd_borrados.txt';
 
@@ -200,6 +202,11 @@ class NeumaticoBD extends Neumatico implements IParte1, IParte2, IParte3, IParte
         if(rename($this->pathFoto, $nuevoPathFoto))
         {
             $this->pathFoto = $nuevoPathFoto;
+            $mensaje = "Mover foto OK";
+        }
+        else 
+        {
+            $mensaje .= ". Problema moviendo la foto";
         }
 
         $ar = fopen($path, "a");
@@ -210,12 +217,17 @@ class NeumaticoBD extends Neumatico implements IParte1, IParte2, IParte3, IParte
 
         if($cant > 0)
         {
-            $rta = true;
+            $exito = true;
+            $mensaje .= ". Archivo txt guardado"; 
+        }
+        else 
+        {
+            $mensaje .= ". Problema con archivo txt";
         }
 
         fclose($ar);
 
-        return $rta;
+        return json_encode(array("exito"=>$exito,"mensaje"=>$mensaje));
     }
 
     public static function traerPorId(int $id) : NeumaticoBD | null
@@ -288,7 +300,8 @@ class NeumaticoBD extends Neumatico implements IParte1, IParte2, IParte3, IParte
         if(isset($neumaticosBorrados))
         {
             $response = 
-            "<table>
+            "<table border = 1>
+                <caption>Listado neumaticos borrados</caption>
                 <tr>
                     <th>ID</th>
                     <th>Marca</th>
@@ -302,12 +315,12 @@ class NeumaticoBD extends Neumatico implements IParte1, IParte2, IParte3, IParte
             {
                 $response .=
                 "<tr>
-                    <th>{$n->id}</th>
-                    <th>{$n->marca}</th>
-                    <th>{$n->medidas}</th>
-                    <th>{$n->precio}</th>
-                    <th>{$n->pathFoto}</th>
-                    <th><img src='" . $n->pathFoto . "' alt='Sin Foto' width=50px height=50px></th>
+                    <td>{$n->id}</td>
+                    <td>{$n->marca}</td>
+                    <td>{$n->medidas}</td>
+                    <td>{$n->precio}</td>
+                    <td>{$n->pathFoto}</td>
+                    <td><img src='" . $n->pathFoto . "' alt='Sin Foto' width=50px height=50px></td>
                 </tr>";
             }
             $response .= "</table>";
@@ -318,25 +331,28 @@ class NeumaticoBD extends Neumatico implements IParte1, IParte2, IParte3, IParte
 
     public static function mostrarBorradosJSON() : string 
     {
-        $mensaje = "";
         $neumaticosBorrados = NeumaticoBD::traerJSON("./archivos/neumaticos_eliminados.json");
+
+        $json_array = array();
 
         if(isset($neumaticosBorrados))
         {
             foreach($neumaticosBorrados as $n)
             {
-                $mensaje .= $n->toJSON();
-                $mensaje .= "\n";
+                array_push($json_array, json_decode($n->ToJSON(), true));
             }
         }
 
-        return $mensaje;
+        return json_encode($json_array);
     }
 
     public static function mostrarFotosModificados() : string 
     {
-        $mensaje = "";
         $files = array();
+        
+        $mensaje = "<table border = 1>";
+        $mensaje .= "<caption>Fotos neumaticos modificados</caption>";
+
         foreach (scandir('./neumaticosModificados') as $file) 
         {
             if ($file !== '.' && $file !== '..') 
@@ -344,10 +360,11 @@ class NeumaticoBD extends Neumatico implements IParte1, IParte2, IParte3, IParte
                 $files[] = $file;
                 $path = './neumaticosModificados/';
                 $path .= pathinfo($file, PATHINFO_FILENAME) . "." . pathinfo($file, PATHINFO_EXTENSION);
-                
-                echo "path: " . $path . "<br>";
 
-                $mensaje .= "<img src='" . $path . "' alt='sin foto' width='50px' height='50px'>";
+                $mensaje .= "<tr>";
+                $mensaje .= "<td>" . $path . "</td>";
+                $mensaje .= "<td><img src='" . $path . "' alt='sin foto' width='50px' height='50px'></td>";
+                $mensaje .= "</tr>"; 
             }
         }
         return $mensaje;

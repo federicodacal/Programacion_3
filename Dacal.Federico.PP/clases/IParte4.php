@@ -4,7 +4,7 @@ namespace Dacal\Federico;
 
 interface IParte4 
 {
-    public function guardarEnArchivo() : bool;
+    public function guardarEnArchivo() : string;
 }
 
 ?>

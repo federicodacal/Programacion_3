@@ -19,24 +19,24 @@ class Neumatico
         $this->precio = $precio;
     }
 
-    public function GetMarca() : string 
+    public function getMarca() : string 
     {
         return $this->marca;
     }
 
-    public function GetMedidas() : string 
+    public function getMedidas() : string 
     {
         return $this->medidas;
     }
 
-    public function GetPrecio() : float 
+    public function getPrecio() : float 
     {
         return $this->precio;
     }
 
     public function toJSON()
     {
-        return json_encode(array("marca"=>$this->GetMarca(), "medidas"=>$this->GetMedidas(), "precio"=>$this->GetPrecio()));
+        return json_encode(array("marca"=>$this->getMarca(), "medidas"=>$this->getMedidas(), "precio"=>$this->getPrecio()));
     }
 
     public function equals(Neumatico $n)
@@ -67,7 +67,7 @@ class Neumatico
             $json = "[";
             for($i = 0; $i < count($lista); $i++)
                 {
-                    $json .= $lista[$i]->ToJson();
+                    $json .= $lista[$i]->toJson();
 
                     if($i < count($lista)-1)
                     {
@@ -79,7 +79,6 @@ class Neumatico
             $cant = fwrite($ar, $json);
         }
         
-
         if($cant > 0)
         {
             $exito = true;
@@ -95,35 +94,29 @@ class Neumatico
     {
         $neumaticos = array();
 
-        if(!file_exists($path))
+        if(file_exists($path))
         {
-            $newFile = fopen($path, "w");
+            $ar = fopen($path, "r");
 
-            fwrite($newFile, "");
+            $filesize = filesize($path);
 
-            fclose($newFile);
-        }
-
-        $ar = fopen($path, "r");
-
-        $filesize = filesize($path);
-
-        if($filesize > 0)
-        {
-            $json = fread($ar, $filesize);
-
-            $neumaticosJson = json_decode($json, true);
-
-            if(isset($neumaticosJson))
+            if($filesize > 0)
             {
-                foreach($neumaticosJson as $usuario)
+                $json = fread($ar, $filesize);
+
+                $neumaticosJson = json_decode($json, true);
+
+                if(isset($neumaticosJson))
                 {
-                    array_push($neumaticos, new Neumatico($usuario["marca"], $usuario["medidas"], $usuario["precio"]));
-                } 
+                    foreach($neumaticosJson as $usuario)
+                    {
+                        array_push($neumaticos, new Neumatico($usuario["marca"], $usuario["medidas"], $usuario["precio"]));
+                    } 
+                }
             }
-        }
     
-        fclose($ar);
+            fclose($ar);
+        }
 
         return $neumaticos;
     }
@@ -161,11 +154,19 @@ class Neumatico
                 {
                     if($neumatico->equals($item))
                     {
-                        $exito = true;
+                        
                         $sumatoria = Neumatico::calcularPrecioPorMarcaYMedida($neumatico->marca, $neumatico->medidas, $lista);
-
+                        
                         $mensaje = "Marca: $neumatico->marca - Medida: $neumatico->medidas - Sumatoria: \$$sumatoria";
+
+                        $exito = true;
+                        break;
                     }
+                }
+
+                if(!$exito)
+                {
+                    $mensaje = "No hubo coincidencia";
                 }
             }
             else 

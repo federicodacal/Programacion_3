@@ -14,14 +14,9 @@ if(isset($marca) && isset($medidas) && isset($precio))
 {
     $neumatico = new Neumatico($marca, $medidas, $precio);
 
-    if($response = $neumatico->guardarJSON('./archivos/neumaticos.json'))
+    if(isset($neumatico))
     {
-        echo "Neumatico guardado\n";
-        echo $response;
-    }
-    else 
-    {
-        echo "Hubo un problema";
+        echo $neumatico->guardarJSON('./archivos/neumaticos.json');
     }
 }
 else 

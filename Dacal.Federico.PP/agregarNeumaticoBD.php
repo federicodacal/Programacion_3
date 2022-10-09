@@ -33,8 +33,16 @@ if(isset($marca) && isset($medidas) && isset($precio) && isset($foto))
 		if($neumatico->agregar())
 		{
 			$exito = true;
-			guardarImagen($pathFoto);
-			$mensaje = "Agregado";
+			$mensaje = "Agregado. ";
+
+			if(guardarImagen($pathFoto))
+			{
+				$mensaje .= "Foto OK";
+			}
+			else 
+			{
+				$mensaje .= "Problema guardando foto";
+			}
 		}
 		else 
 		{

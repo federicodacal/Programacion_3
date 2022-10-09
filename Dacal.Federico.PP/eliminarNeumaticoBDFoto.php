@@ -21,15 +21,17 @@ if(isset($neumatico_json))
 
     if(isset($neumatico))
     {
-        if(NeumaticoBD::eliminar($neumatico->GetId()))
+        if(NeumaticoBD::eliminar($neumatico->getId()))
         {
-            $exito = true;
-            $mensaje = "Neumatico eliminado\n"; 
+            $mensaje = "Neumatico eliminado. "; 
     
-            if($neumatico->guardarEnArchivo())
-            {
-                $mensaje .= "Foto movida correctamente";
-            }
+            $response = $neumatico->guardarEnArchivo();
+
+            $objResponse = json_decode($response, true);
+            
+            $mensaje .= $objResponse["mensaje"];
+
+            $exito = $objResponse["exito"];
         }
         else 
         {

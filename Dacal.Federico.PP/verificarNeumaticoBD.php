@@ -10,9 +10,6 @@ use Dacal\Federico\AccesoDatos;
 
 $obj_neumatico = isset($_POST["obj_neumatico"]) ? $_POST["obj_neumatico"] : NULL;
 
-$exito = false;
-$mensaje = "Hubo un problema";
-
 if(isset($obj_neumatico))
 {
     $obj = json_decode($obj_neumatico, true);
@@ -24,7 +21,7 @@ if(isset($obj_neumatico))
     if($neumatico->existe($neumaticos))
     {
         $exito = true;
-        $mensaje .= $neumatico->toJSON();  
+        $mensaje = $neumatico->toJSON();
     }
     else 
     {
@@ -32,9 +29,6 @@ if(isset($obj_neumatico))
     }
 }
 
-$response = array("exito"=>$exito, "mensaje"=>$mensaje);
-
-echo json_encode($response);
-
+echo $mensaje;
 
 ?>

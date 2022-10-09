@@ -14,7 +14,6 @@ $foto = isset($_FILES["foto"]) ? $_FILES["foto"] : NULL;
 $exito = false;
 $mensaje = "Hubo un problema";
 
-
 if(isset($neumatico_json) && isset($foto))
 {
     $obj = json_decode($neumatico_json, true);
@@ -22,7 +21,8 @@ if(isset($neumatico_json) && isset($foto))
     $pathFoto = getPath($foto, $obj["marca"]);
 
     $neumaticoEnBd = NeumaticoBD::traerPorId($obj["id"]);
-    $pathViejo = $neumaticoEnBd->GetPathFoto();
+
+    $pathViejo = $neumaticoEnBd->getPathFoto();
 
     if(isset($neumaticoEnBd))
     {
@@ -32,20 +32,20 @@ if(isset($neumatico_json) && isset($foto))
         if($neumatico->modificar())
         {
             $exito = true;
-            $mensaje = "Neumatico modificado\n";
+            $mensaje = "Neumatico modificado. ";
             
             if(guardarImagen($pathFoto))
             {
-                $mensaje .= "Se guardó foto nueva OK\n";
+                $mensaje .= "Se guardó foto nueva OK. ";
             }
 
-            $extensionFoto = pathinfo($neumatico->GetPathFoto(), PATHINFO_EXTENSION);
+            $extensionFoto = pathinfo($neumatico->getPathFoto(), PATHINFO_EXTENSION);
 
-            $nuevoPathFoto = './neumaticosModificados/' . $neumatico->GetId() . "." . $neumatico->GetMarca() . "." . "modificado" . "." . date("His") . "." . $extensionFoto;
+            $nuevoPathFoto = './neumaticosModificados/' . $neumatico->getId() . "." . $neumatico->getMarca() . "." . "modificado" . "." . date("His") . "." . $extensionFoto;
 
             if(rename($pathViejo, $nuevoPathFoto))
             {
-                $mensaje .= "Se movió foto vieja OK\n";
+                $mensaje .= "Se movió foto vieja OK.";
             }
         }
         else 
