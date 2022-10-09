@@ -3,8 +3,6 @@
 require_once "../registro_json/usuario.php";
 require_once "./producto.php";
 
-use Producto;
-
 class Venta 
 {
     public int $id;
@@ -23,7 +21,6 @@ class Venta
         $this->exito = $exito;
         $this->setId($id);
         $this->setFechaVenta($fechaVenta);
-        $this->vender();
     }
 
     private function setId(int $id) : void
@@ -58,6 +55,7 @@ class Venta
         $listaUsuarios = Usuario::traerUsuariosJson("../registro_json/archivos/usuarios.json");
 
         $existeUsuario = false;
+        $existeProducto = false;
 
         if(isset($listaProductos) && isset($listaUsuarios) && count($listaProductos) > 0 && count($listaUsuarios) > 0)
         {
@@ -80,8 +78,10 @@ class Venta
                         if($stockResultante >= 0)
                         {
                             $prod->stock -= intval($this->stock);
+
                             if(Venta::guardarJson($this))
                             {
+                                Producto::guardarJson($prod, "venta");
                                 $mensaje = "Vendido!";
                                 break;
                             }
@@ -89,8 +89,8 @@ class Venta
                         else 
                         {
                             $mensaje .= "No alcanza el stock";
+                            break;
                         }
-                        
                     }
                 }
             }
@@ -141,6 +141,8 @@ class Venta
         if(!file_exists("./ventas.json"))
         {
             $newFile = fopen("./ventas.json", "w");
+
+            fwrite($newFile, "");
 
             fclose($newFile);
         }

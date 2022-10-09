@@ -29,6 +29,7 @@ if($accion == 'venta')
     if(isset($codigoDeBarra) && isset($idUsuario) && isset($stock))
     {
         $venta = new Venta($idUsuario, $codigoDeBarra, $stock);
+        $venta->vender();
     }
 }
 else 

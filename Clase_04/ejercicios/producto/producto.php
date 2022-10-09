@@ -62,7 +62,7 @@ class Producto
         return $mensaje;
     }
 
-    public static function guardarJson(Producto $prod) : bool 
+    public static function guardarJson(Producto $prod, string $operacion = "cargaProducto") : bool 
     {
         $rta = false;
         $yaSeEncuentra = false;
@@ -72,14 +72,21 @@ class Producto
         $ar = fopen("./productos.json", "w");
 
         if(isset($lista))
-        {
+        { 
             foreach($lista as $item)
             {
                 if($item->tipo == $prod->tipo && $item->nombre == $prod->nombre)
                 {
-                    $item->stock += $prod->stock;
-                    $item->precio = $prod->precio;
                     $yaSeEncuentra = true;
+                    if($operacion == "cargaProducto")
+                    {
+                        $item->stock += $prod->stock;
+                        $item->precio = $prod->precio;
+                    }
+                    else if($operacion == "venta")
+                    {
+                        $item->stock = $prod->stock;
+                    }
                 }
             }
         
@@ -92,6 +99,7 @@ class Producto
             {
                 "Actualizado";
             }
+            
         }
         else 
         {
@@ -120,14 +128,16 @@ class Producto
         
         if(!file_exists($file))
         {
-            $newFile = fopen("./productos.json", "w");
+            $newFile = fopen($file, "w");
+
+            fwrite($newFile, "");
 
             fclose($newFile);
         }
         
-        $ar = fopen("./productos.json", "r");
+        $ar = fopen($file, "r");
 
-        $filesize = filesize("./productos.json");
+        $filesize = filesize($file);
 
         if($filesize > 0)
         {
@@ -139,7 +149,6 @@ class Producto
             {
                 foreach($productosJson as $prod)
                 {
-                    //public function __construct(string $codigoDeBarra, string $tipo, int $stock, float $precio, string $nombre, int $id = 0)
                     array_push($productos, new Producto($prod["codigoDeBarra"], $prod["tipo"], $prod["stock"], $prod["precio"], $prod["nombre"], $prod["id"]));
                 }        
             }
