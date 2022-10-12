@@ -1,0 +1,2 @@
+4,Cafe,Ethiopia,A345,100,./productos/imagenes/Cafe.Ethiopia.202122.jpg
+5,Cafe,Ethiopia,A345,100,./productosBorrados/5.Cafe.borrado.204756.jpg
