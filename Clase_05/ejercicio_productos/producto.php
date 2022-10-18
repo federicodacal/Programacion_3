@@ -4,9 +4,11 @@ namespace Productos_PDO;
 
 require_once './accesoDatos.php';
 require_once './usuario.php';
+require_once './venta.php';
 
 use PDO;
 use Productos_PDO\Usuario;
+use Productos_PDO\Venta;
 
 class Producto 
 {
@@ -28,7 +30,7 @@ class Producto
         $this->nombre = $nombre;
         $this->fecha_de_creacion = $fecha_de_creacion;
         $this->fecha_de_modificacion = $fecha_de_modificacion;
-        $this->$id = $id;
+        $this->id = $id;
     }
 
     public function toString() : string 
@@ -182,9 +184,38 @@ class Producto
         return json_encode(array("exito"=>$exito,"rta"=>$rta,"stock"=>$stock));
     }
 
-    public static function realizarVenta(int $idUsuario, string $codigoDeBarra, int $cantidad) : bool 
+    public static function traerPorCodigo(string $codigo) : Producto | null
+    {
+        $producto = null;
+        $objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso();
+
+        $consulta = $objetoAccesoDato->retornarConsulta("SELECT * FROM productos WHERE codigo_de_barra = :codigo_de_barra");
+
+        $consulta->bindValue(":codigo_de_barra", $codigo, PDO::PARAM_INT);
+
+        $consulta->execute();
+
+        if($fila = $consulta->fetch(PDO::FETCH_ASSOC)) 
+        {
+            $codigoDeBarra = $fila["codigo_de_barra"];
+            $nombre = $fila["nombre"];
+            $tipo = $fila["tipo"];
+            $stock = $fila["stock"];
+            $precio = $fila["precio"];
+            $fecha_de_creacion = $fila["fecha_de_creacion"];
+            $fecha_de_modificacion = $fila["fecha_de_modificacion"];
+            $id = $fila["id"];
+
+            $producto = new Producto($codigoDeBarra, $tipo, $nombre, $stock, $precio, $fecha_de_creacion, $fecha_de_modificacion, $id);
+        }
+
+        return $producto;
+    }
+
+    public static function realizarVenta(int $idUsuario, string $codigoDeBarra, int $cantidad) : string 
     {
         $rta = false;
+        $mensaje = "Ocurrio un problema. ";
 
         $okUsuario = Usuario::verificarPorId($idUsuario);
 
@@ -194,11 +225,42 @@ class Producto
         {
             if($okProducto["stock"] >= $cantidad)
             {
-                $rta = true;
+                $producto = Producto::traerPorCodigo($codigoDeBarra);
+                $usuario = Usuario::traerPorId($idUsuario);
+
+                if(isset($producto) && isset($usuario))
+                {
+                    $venta = new Venta($producto->id, $usuario->id, $cantidad, $usuario->apellido, $producto->nombre, "");
+                    if($venta->cargarVenta())
+                    {
+                        $mensaje = "Venta agregada. ";
+
+                        $producto->stock -= $cantidad;
+                        $producto->fecha_de_modificacion = date("Y-m-d");
+
+                        if($producto->modificar())
+                        {
+                            $mensaje .= "Producto modificado.";
+                            $rta = true;
+                        }
+                        else 
+                        {
+                            $mensaje .= "Problema al modificar producto.";
+                        }
+                    }
+                    else 
+                    {
+                        $mensaje = "Problema al cargar la venta.";
+                    }
+                }
+            }
+            else 
+            {
+                $mensaje .= "No alcanza stock.";
             }
         }
 
-        return $rta;
+        return json_encode(array("rta"=>$rta,"mensaje"=>$mensaje));
     }
 
     public function modificar() : bool 
@@ -228,6 +290,43 @@ class Producto
         }
 
         return $rta;
+    }
+
+    // Obtener los detalles completos de todos los productos y poder ordenarlos alfabéticamente de forma ascendente y descendente.
+    public static function traerTodosAlfabeticamente(bool $asc=true) : array 
+    {
+        $productos = array();
+
+        $orden = "ASC";
+
+        if(!$asc)
+        {
+            $orden = "DESC";
+        }
+
+        $objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso();
+        
+        $consulta = $objetoAccesoDato->retornarConsulta("SELECT * FROM productos ORDER BY nombre $orden");        
+        
+        $consulta->execute();
+                
+        while($fila = $consulta->fetch(PDO::FETCH_ASSOC))
+        {
+            $codigoDeBarra = $fila["codigo_de_barra"];
+            $nombre = $fila["nombre"];
+            $tipo = $fila["tipo"];
+            $stock = $fila["stock"];
+            $precio = $fila["precio"];
+            $fecha_de_creacion = $fila["fecha_de_creacion"];
+            $fecha_de_modificacion = $fila["fecha_de_modificacion"];
+            $id = $fila["id"];
+
+            $producto = new Producto($codigoDeBarra, $tipo, $nombre, $stock, $precio, $fecha_de_creacion, $fecha_de_modificacion, $id);
+
+            array_push($productos, $producto);
+        }
+
+        return $productos; 
     }
 }
 

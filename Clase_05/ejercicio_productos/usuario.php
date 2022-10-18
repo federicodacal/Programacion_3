@@ -41,7 +41,7 @@ class Usuario
 
     public function toString() : string 
     {
-        return "ID: {$this->id} Nombre: {$this->nombre} - Mail: {$this->mail} - Clave: {$this->clave} - Registro: {$this->fechaRegistro}";
+        return "ID: {$this->id} Apellido: {$this->apellido} - Nombre: {$this->nombre} - Mail: {$this->mail} - Clave: {$this->clave} - Registro: {$this->fechaRegistro}";
     }
 
     public function agregar() : bool
@@ -89,6 +89,38 @@ class Usuario
         }
 
         return $usuarios; 
+    }
+
+    public static function traerPorId(int $id) : Usuario | null 
+    {
+        $usuario = null;
+
+        $usuarios = array();
+
+        $objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso();
+        
+        $consulta = $objetoAccesoDato->retornarConsulta("SELECT * FROM usuarios WHERE id = :id");
+        
+        $consulta->bindValue(":id", $id, PDO::PARAM_INT);
+        
+        $consulta->execute();
+                
+        if($fila = $consulta->fetch(PDO::FETCH_ASSOC))
+        {
+            $nombre = $fila["nombre"];
+            $apellido = $fila["apellido"];
+            $mail = $fila["mail"];
+            $clave = $fila["clave"];
+            $fecha_de_registro = $fila["fecha_de_registro"];
+            $localidad = $fila["localidad"];
+            $id = $fila["id"];
+
+            $usuario = new Usuario($nombre, $apellido, $mail, $clave, $localidad, $fecha_de_registro, $id);
+
+            array_push($usuarios, $usuario);
+        }
+
+        return $usuario;
     }
     
     public static function mostrarTodos() : string 
@@ -207,6 +239,75 @@ class Usuario
 
         return $rta;
     }
+
+    // Obtener los detalles completos de todos los usuarios y poder ordenarlos alfabéticamente de forma ascendente o descendente.
+    public static function traerTodosAlfabeticamente(bool $asc=true) : array 
+    { 
+        $usuarios = array();
+
+        $orden = "ASC";
+
+        if(!$asc)
+        {
+            $orden = "DESC";
+        }
+
+        $objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso();
+        
+        $consulta = $objetoAccesoDato->retornarConsulta("SELECT * FROM usuarios ORDER BY apellido $orden");
+                
+        $consulta->execute();
+                
+        while($fila = $consulta->fetch(PDO::FETCH_ASSOC))
+        {
+            $nombre = $fila["nombre"];
+            $apellido = $fila["apellido"];
+            $mail = $fila["mail"];
+            $clave = $fila["clave"];
+            $fecha_de_registro = $fila["fecha_de_registro"];
+            $localidad = $fila["localidad"];
+            $id = $fila["id"];
+
+            $usuario = new Usuario($nombre, $apellido, $mail, $clave, $localidad, $fecha_de_registro, $id);
+
+            array_push($usuarios, $usuario);
+        }
+
+        return $usuarios; 
+    }
+
+    // J. Obtener los datos completos de los usuarios filtrando por letras en su nombre o apellido.
+    public static function traerTodosFiltradoPorCadena(string $cadena) : array
+    {
+        $usuarios = array();
+
+        $objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso();
+        
+        $consulta = $objetoAccesoDato->retornarConsulta("SELECT * FROM usuarios WHERE nombre LIKE ? OR apellido LIKE ?");
+
+        $consulta->bindValue(1,"%$cadena%", PDO::PARAM_STR);
+        $consulta->bindValue(2,"%$cadena%", PDO::PARAM_STR);
+                
+        $consulta->execute();
+                
+        while($fila = $consulta->fetch(PDO::FETCH_ASSOC))
+        {
+            $nombre = $fila["nombre"];
+            $apellido = $fila["apellido"];
+            $mail = $fila["mail"];
+            $clave = $fila["clave"];
+            $fecha_de_registro = $fila["fecha_de_registro"];
+            $localidad = $fila["localidad"];
+            $id = $fila["id"];
+
+            $usuario = new Usuario($nombre, $apellido, $mail, $clave, $localidad, $fecha_de_registro, $id);
+
+            array_push($usuarios, $usuario);
+        }
+
+        return $usuarios; 
+    }
+
 }
 
 ?>

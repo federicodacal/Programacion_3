@@ -71,13 +71,19 @@ else if($accion == 'verificar')
 }
 else if($accion == 'realizarVenta')
 {
-    if(Producto::realizarVenta($idUsuario, $codigoDeBarra, $stock))
+    $response = Producto::realizarVenta($idUsuario, $codigoDeBarra, $stock);
+
+    $obj = json_decode($response, true);
+
+    if($obj["rta"])
     {
-        echo "Venta realizada";
+        echo "Venta realizada. ";
+        echo $obj["mensaje"];
     }
     else 
     {
-        echo "No se pudo";
+        echo "No se pudo. ";
+        echo $obj["mensaje"];
     }
 }
 else if($accion == 'modificar')
