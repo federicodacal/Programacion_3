@@ -30,12 +30,6 @@ use const FILTER_VALIDATE_IP;
 
 class Uri implements UriInterface
 {
-    public const SUPPORTED_SCHEMES = [
-        '' => null,
-        'http' => 80,
-        'https' => 443
-    ];
-
     /**
      * Uri scheme (without "://" suffix)
      *
@@ -140,7 +134,7 @@ class Uri implements UriInterface
      * @return string
      *
      * @throws InvalidArgumentException If the Uri scheme is not a string.
-     * @throws InvalidArgumentException If Uri scheme is not exists in SUPPORTED_SCHEMES
+     * @throws InvalidArgumentException If Uri scheme is not "", "https", or "http".
      */
     protected function filterScheme($scheme): string
     {
@@ -148,11 +142,15 @@ class Uri implements UriInterface
             throw new InvalidArgumentException('Uri scheme must be a string.');
         }
 
+        static $valid = [
+            '' => true,
+            'https' => true,
+            'http' => true,
+        ];
+
         $scheme = str_replace('://', '', strtolower($scheme));
-        if (!key_exists($scheme, self::SUPPORTED_SCHEMES)) {
-            throw new InvalidArgumentException(
-                'Uri scheme must be one of: "' . implode('", "', array_keys(static::SUPPORTED_SCHEMES)) . '"'
-            );
+        if (!isset($valid[$scheme])) {
+            throw new InvalidArgumentException('Uri scheme must be one of: "", "https", "http"');
         }
 
         return $scheme;
@@ -302,7 +300,7 @@ class Uri implements UriInterface
      */
     protected function hasStandardPort(): bool
     {
-        return static::SUPPORTED_SCHEMES[$this->scheme] === $this->port;
+        return ($this->scheme === 'http' && $this->port === 80) || ($this->scheme === 'https' && $this->port === 443);
     }
 
     /**

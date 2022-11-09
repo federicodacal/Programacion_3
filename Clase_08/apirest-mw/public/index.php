@@ -50,7 +50,7 @@ $app->delete('/', function (Request $request, Response $response, array $args) :
 /**
  * Example middleware closure
  *
- * @param  ServerRequest  $request PSR-7 request
+ * @param Request  $request PSR-7 request
  * @param  RequestHandler $handler PSR-15 request handler
  *
  * @return ResponseMW
@@ -327,7 +327,7 @@ $app->group('/grupo/POO', function (RouteCollectorProxy $grupo) {
     ->add(\MiClase::class . ":MostrarInstancia");
   
 //MW A NIVEL DE GRUPO
-})->add(\MiClase::class . "::MostrarEstatico");
+})->add(\MiClase::class . "::MostrarEstatico"); // Mas externo
 
 
 

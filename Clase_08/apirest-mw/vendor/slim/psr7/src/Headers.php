@@ -179,15 +179,7 @@ class Headers implements HeadersInterface
      */
     protected function parseAuthorizationHeader(array $headers): array
     {
-        $hasAuthorizationHeader = false;
-        foreach ($headers as $name => $value) {
-            if (strtolower($name) === 'authorization') {
-                $hasAuthorizationHeader = true;
-                break;
-            }
-        }
-
-        if (!$hasAuthorizationHeader) {
+        if (!isset($headers['Authorization'])) {
             if (isset($this->globals['REDIRECT_HTTP_AUTHORIZATION'])) {
                 $headers['Authorization'] = $this->globals['REDIRECT_HTTP_AUTHORIZATION'];
             } elseif (isset($this->globals['PHP_AUTH_USER'])) {
