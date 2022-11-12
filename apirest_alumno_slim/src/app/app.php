@@ -25,9 +25,11 @@ $app->group('/alumno', function (RouteCollectorProxy $grupo) {
 
     $grupo->get('/', \Alumno::class . ':traerTodos');
     $grupo->get('/{legajo}', \Alumno::class . ':verificar');
-    $grupo->post('/', \Alumno::class, ':agregar');
-    $grupo->put('/{legajo}', \Alumno::class, ':modificar');
-    $grupo->delete('/{legajo}', \Alumno::class, ':borrar');
+    $grupo->post('/', \Alumno::class . ':agregar');
+    $grupo->put('/{alumno_json}', \Alumno::class . ':modificar');
+    $grupo->delete('/{legajo}', \Alumno::class . ':borrar');
+    $grupo->post('/{alumno_json}', \Alumno::class . ':logear');
+    $grupo->get('/tabla/', \Alumno::class . ':mostrar');
 });
 
 
