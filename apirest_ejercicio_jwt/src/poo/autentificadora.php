@@ -13,7 +13,7 @@ class Autentificadora
         self::$aud = self::aud();
 
         $token = array(
-        	'iat'=>$time,
+        	'iat'=> $time,
             'exp' => $time + $exp,
             'aud' => self::$aud,
             'data' => $data,
