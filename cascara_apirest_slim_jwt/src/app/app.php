@@ -8,7 +8,7 @@ use Slim\Factory\AppFactory;
 
 require __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../poo/usuario.php';
-require_once __DIR__ . '/../poo/auto.php';
+require_once __DIR__ . '/../poo/entidad.php';
 require_once __DIR__ . '/../poo/mw.php';
 
 use Firebase\JWT\JWT;
