@@ -61,7 +61,14 @@ $app->get('/ruteoOpcional[/]', function (Request $request, Response $response, a
 
 $app->get('/ruteoOpcional/{param}/[{otro}]', function (Request $request, Response $response, array $args) : Response {  
 
-    $response->getBody()->write("Ruteo, con params opcional -> " . $args["param"]);
+    $mensaje = "Ruteo, con params opcional -> " . $args["param"];
+
+    if(isset($args["otro"]))
+    {
+        $mensaje .= " + " . $args["otro"];
+    }
+
+    $response->getBody()->write($mensaje);
     return $response;
 });
 

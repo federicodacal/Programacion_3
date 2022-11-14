@@ -104,9 +104,8 @@ $mwDos = function (Request $request, RequestHandler $handler) : ResponseMW {
 //01.-AGREGO MIDDLEWARE PARA TODOS LOS VERBOS
 //*********************************************************************************************//
 
-$app->add($mwUno);
-$app->add($mwDos);
-
+// $app->add($mwUno);
+// $app->add($mwDos);
   
 //*********************************************************************************************//
 //02.-AGREGO ROUTE MIDDLEWARE, SOLO PARA PUT
